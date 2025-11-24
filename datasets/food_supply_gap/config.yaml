@@ -1,0 +1,66 @@
+dataset:
+  id: "4kc9-zrs2"
+  name: "Emergency Food Supply Gap"
+  description: "Food supply gap data by NYC neighborhood tabulation areas"
+  
+api:
+  endpoint: "https://data.cityofnewyork.us/api/v3/views/4kc9-zrs2/query.json"
+  limit: 1000
+  timeout: 30
+  
+schema:
+  columns:
+    year:
+      type: "integer"
+      required: true
+      description: "Year of the data"
+    
+    nta_code:
+      type: "string"
+      required: true
+      max_length: 10
+      description: "NTA code identifier"
+    
+    nta_name:
+      type: "string"
+      required: false
+      max_length: 255
+      description: "NTA name"
+    
+    supply_gap_lbs:
+      type: "numeric"
+      required: false
+      description: "Food supply gap in pounds"
+    
+    food_insecure_pct:
+      type: "numeric"
+      required: false
+      min: 0
+      max: 100
+      description: "Percentage of food insecure population"
+    
+    unemployment_rate:
+      type: "numeric"
+      required: false
+      min: 0
+      max: 100
+      description: "Unemployment rate percentage"
+    
+    vulnerable_pop_score:
+      type: "numeric"
+      required: false
+      description: "Vulnerable population score"
+    
+    weighted_score:
+      type: "numeric"
+      required: false
+      description: "Weighted score for prioritization"
+    
+    rank:
+      type: "integer"
+      required: false
+      description: "Rank based on weighted score"
+
+validation:
+  allow_duplicates: false
+  unique_keys: ["dataset_id", "year", "nta_code"]

@@ -1,0 +1,19 @@
+datasets:
+  food_supply_gap:
+    name: "Emergency Food Supply Gap"
+    dataset_id: "4kc9-zrs2"
+    table_name: "food_supply_gaps"
+    enabled: true
+    update_frequency: "annually"
+    config_path: "datasets/food_supply_gap/config.yaml"
+    transformer_class: "datasets.food_supply_gap.transformer.FoodSupplyGapTransformer"
+  
+  # Future datasets can be added here:
+  # restaurant_inspections:
+  #   name: "Restaurant Inspections"
+  #   dataset_id: "43nn-pn8j"
+  #   table_name: "restaurant_inspections"
+  #   enabled: false
+  #   update_frequency: "daily"
+  #   config_path: "datasets/restaurant_inspections/config.yaml"
+  #   transformer_class: "datasets.restaurant_inspections.transformer.RestaurantInspectionsTransformer"
