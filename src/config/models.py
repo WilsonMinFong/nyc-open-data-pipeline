@@ -1,7 +1,7 @@
 """Pydantic models for configuration validation."""
 
 from typing import Dict, List, Optional, Any
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class APIConfig(BaseModel):
@@ -91,7 +91,7 @@ class DatabaseConfig(BaseModel):
 class AppConfig(BaseModel):
     """Application configuration model."""
     api_token: str
-    api_base_url: str = "https://data.cityofnewyork.us/resource"
+    api_base_url: str = "https://data.cityofnewyork.us/api/v3/views"
     database: DatabaseConfig
     raw_data_path: str = "data/raw"
     processed_data_path: str = "data/processed"

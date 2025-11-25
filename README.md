@@ -164,7 +164,7 @@ dataset:
   description: "Dataset description"
 
 api:
-  endpoint: "https://data.cityofnewyork.us/resource/your-id.json"
+  endpoint: "https://data.cityofnewyork.us/api/v3/views/your-id/query.json"
   limit: 1000
   timeout: 30
 

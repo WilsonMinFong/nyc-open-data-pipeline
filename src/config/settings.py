@@ -23,7 +23,7 @@ class Settings:
             api_token=os.getenv('NYC_OPEN_DATA_API_TOKEN', ''),
             api_base_url=os.getenv(
                 'NYC_OPEN_DATA_API_BASE_URL',
-                'https://data.cityofnewyork.us/resource'
+                'https://data.cityofnewyork.us/api/v3/views'
             ),
             database=DatabaseConfig(
                 host=os.getenv('POSTGRES_HOST', 'localhost'),
