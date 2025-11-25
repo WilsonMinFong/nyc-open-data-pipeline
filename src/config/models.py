@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field, field_validator
 
 class APIConfig(BaseModel):
     """API configuration model."""
-    endpoint: str
+    endpoint: Optional[str] = None
     limit: int = 1000
     timeout: int = 30
 

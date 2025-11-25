@@ -4,7 +4,6 @@ dataset:
   description: "Food supply gap data by NYC neighborhood tabulation areas"
   
 api:
-  endpoint: "https://data.cityofnewyork.us/api/v3/views/4kc9-zrs2/query.json"
   limit: 1000
   timeout: 30
   
