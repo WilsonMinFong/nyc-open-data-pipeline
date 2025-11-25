@@ -15,6 +15,7 @@ class ColumnSchema(BaseModel):
     """Column schema definition."""
     type: str
     required: bool = False
+    primary_key: bool = False
     max_length: Optional[int] = None
     min: Optional[float] = None
     max: Optional[float] = None
@@ -36,6 +37,7 @@ class DatasetConfigModel(BaseModel):
 
 class DatasetSchemaConfig(BaseModel):
     """Dataset schema configuration."""
+    table_name: str
     columns: Dict[str, ColumnSchema]
 
 

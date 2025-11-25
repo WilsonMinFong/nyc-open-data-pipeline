@@ -103,14 +103,16 @@ def ingest_dataset(
         logger.info("STEP 3: Storing data")
         logger.info("=" * 60)
         
+        # Enable PostGIS
+        storage.enable_postgis()
+        
         # Create metadata table
         storage.create_metadata_table()
         
-        # Get schema from transformer
-        transformer = parser.transformer
-        schema = transformer.get_schema()
+        # Get schema
+        schema = parser.transformer.get_schema()
         
-        # Create table if it doesn't exist
+        # Create table
         storage.create_table_from_schema(schema)
         
         # Upsert data (update if exists, insert if new)

@@ -1,0 +1,59 @@
+dataset:
+  id: "9nt8-h7nd"
+  name: "2020 Neighborhood Tabulation Areas (NTAs)"
+  description: "2020 Neighborhood Tabulation Areas (NTAs) are medium-sized statistical geographies for reporting Decennial Census and American Community Survey (ACS)."
+
+api:
+  limit: 1000
+  timeout: 60
+
+validation:
+  allow_duplicates: false
+  unique_keys: ["nta2020"]
+
+schema:
+  table_name: "ntas_2020"
+  columns:
+    boro_code:
+      type: "INTEGER"
+      description: "Borough code"
+    boro_name:
+      type: "VARCHAR(50)"
+      description: "Borough name"
+    county_fips:
+      type: "VARCHAR(3)"
+      description: "County FIPS code"
+    nta2020:
+      type: "VARCHAR(6)"
+      primary_key: true
+      description: "NTA 2020 code"
+    nta_name:
+      type: "VARCHAR(255)"
+      description: "NTA name"
+    nta_abbrev:
+      type: "VARCHAR(50)"
+      description: "NTA abbreviation"
+    nta_type:
+      type: "VARCHAR(1)"
+      description: "NTA type"
+    cdta2020:
+      type: "VARCHAR(4)"
+      description: "CDTA 2020 code"
+    cdta_name:
+      type: "VARCHAR(255)"
+      description: "CDTA name"
+    shape_leng:
+      type: "NUMERIC(20, 10)"
+      description: "Shape length"
+    shape_area:
+      type: "NUMERIC(20, 10)"
+      description: "Shape area"
+    geom:
+      type: "GEOMETRY('MULTIPOLYGON', srid=4326)"
+      description: "NTA geometry"
+
+  indexes:
+    - name: "idx_ntas_2020_boro_code"
+      columns: ["boro_code"]
+    - name: "idx_ntas_2020_nta_name"
+      columns: ["nta_name"]

@@ -8,6 +8,15 @@ datasets:
     config_path: "datasets/food_supply_gap/config.yaml"
     transformer_class: "datasets.food_supply_gap.transformer.FoodSupplyGapTransformer"
   
+  ntas_2020:
+    name: "2020 Neighborhood Tabulation Areas (NTAs)"
+    dataset_id: "9nt8-h7nd"
+    table_name: "ntas_2020"
+    enabled: true
+    update_frequency: "quarterly"
+    config_path: "datasets/ntas_2020/config.yaml"
+    transformer_class: "datasets.ntas_2020.transformer.Ntas2020Transformer"
+
   # Future datasets can be added here:
   # restaurant_inspections:
   #   name: "Restaurant Inspections"

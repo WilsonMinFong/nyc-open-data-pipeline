@@ -7,6 +7,7 @@ from sqlalchemy import create_engine, text, MetaData, Table, Column, String, Int
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.engine import Engine
 from sqlalchemy.pool import NullPool
+from geoalchemy2 import Geometry
 
 from src.config.settings import settings
 from src.utils.logger import get_logger
@@ -39,10 +40,18 @@ class DataStorage:
             )
         return self.engine
 
+    def enable_postgis(self) -> None:
+        """Enable PostGIS extension if not exists."""
+        engine = self.get_engine()
+        with engine.connect() as conn:
+            conn.execute(text("CREATE EXTENSION IF NOT EXISTS postgis;"))
+            conn.commit()
+        logger.info("PostGIS extension enabled/verified")
+
     def create_metadata_table(self) -> None:
         """Create dataset metadata tracking table if it doesn't exist."""
         engine = self.get_engine()
-        
+
         # Define table using SQLAlchemy Core
         metadata_table = Table(
             'dataset_metadata',
@@ -55,24 +64,24 @@ class DataStorage:
             Column('status', String(50)),
             extend_existing=True
         )
-        
+
         # Create table
         self.metadata.create_all(engine)
-        
+
         logger.info("Dataset metadata table created/verified")
 
     def create_table_from_schema(self, schema: Dict[str, Any]) -> None:
         """
         Create table from schema definition.
-        
+
         Args:
             schema: Schema dictionary from transformer
         """
         engine = self.get_engine()
         table_name = schema['table_name']
-        
+
         logger.info(f"Creating table: {table_name}")
-        
+
         # Map string types to SQLAlchemy types
         type_mapping = {
             'INTEGER': Integer,
@@ -81,29 +90,40 @@ class DataStorage:
             'NUMERIC': Numeric,
             'TIMESTAMP': DateTime,
             'SERIAL': Integer,  # SQLAlchemy handles auto-increment for Integer primary keys
+            'GEOMETRY': Geometry,
         }
-        
+
         columns = []
         for col_name, col_def in schema['columns'].items():
             # Parse type string (e.g., "VARCHAR(20)" -> String(20))
             type_str = col_def['type'].upper()
             col_type = None
-            
+
             if '(' in type_str:
                 base_type, args = type_str.split('(', 1)
                 args = args.rstrip(')')
                 base_type = base_type.strip()
-                
+
                 if base_type in type_mapping:
                     # Handle types with arguments like VARCHAR(20) or NUMERIC(10, 2)
-                    if ',' in args:
+                    if base_type == 'GEOMETRY':
+                         # Handle Geometry('MULTIPOLYGON', srid=4326)
+                         # Simple parsing for now, assuming format: GEOMETRY(TYPE, SRID) or GEOMETRY(TYPE)
+                         geom_args = [a.strip() for a in args.split(',')]
+                         geometry_type = geom_args[0].strip("'").strip('"')
+                         srid = 4326
+                         if len(geom_args) > 1:
+                             srid_str = geom_args[1].lower().replace('srid=', '').strip()
+                             srid = int(srid_str)
+                         col_type = Geometry(geometry_type=geometry_type, srid=srid)
+                    elif ',' in args:
                         arg_list = [int(a.strip()) for a in args.split(',')]
                         col_type = type_mapping[base_type](*arg_list)
                     else:
                         col_type = type_mapping[base_type](int(args))
             else:
                 col_type = type_mapping.get(type_str, String)
-            
+
             # Create Column object
             kwargs = {}
             if col_def.get('primary_key'):
@@ -111,19 +131,19 @@ class DataStorage:
                 # For SERIAL/AUTO_INCREMENT behavior in PostgreSQL with SQLAlchemy
                 if type_str == 'SERIAL':
                     kwargs['autoincrement'] = True
-            
+
             if not col_def.get('nullable', True):
                 kwargs['nullable'] = False
-                
+
             if 'default' in col_def:
                 # Handle simple defaults
                 if col_def['default'] == 'CURRENT_TIMESTAMP':
                     kwargs['server_default'] = text('CURRENT_TIMESTAMP')
                 else:
                     kwargs['server_default'] = str(col_def['default'])
-            
+
             columns.append(Column(col_name, col_type, **kwargs))
-        
+
         # Add indexes to table definition
         schema_items = list(columns)
         if 'indexes' in schema:
@@ -132,7 +152,9 @@ class DataStorage:
                 # We can use column names directly for Index inside Table
                 index_cols = index_def['columns']
                 schema_items.append(Index(index_name, *index_cols))
-        
+
+        logger.info(f"Creating table {table_name} with columns: {[c.name for c in columns]}")
+
         # Define table
         table = Table(
             table_name,
@@ -140,10 +162,10 @@ class DataStorage:
             *schema_items,
             extend_existing=True
         )
-        
+
         # Create table (and indexes)
         self.metadata.create_all(engine)
-        
+
         logger.info(f"Table {table_name} created/verified with indexes")
 
     def store_data(
@@ -320,7 +342,20 @@ class DataStorage:
         logger.info(f"Exporting to Parquet: {output_path}")
 
         try:
-            df.to_parquet(
+            # Create a copy to avoid modifying the original dataframe
+            df_export = df.copy()
+
+            # Convert WKTElement objects to string for Parquet compatibility
+            for col in df_export.columns:
+                if df_export[col].dtype == 'object':
+                    # Check if the first non-null value is a WKTElement
+                    first_valid = df_export[col].dropna().first_valid_index()
+                    if first_valid is not None:
+                        val = df_export.loc[first_valid, col]
+                        if hasattr(val, 'desc') or 'WKTElement' in str(type(val)):
+                            df_export[col] = df_export[col].astype(str)
+
+            df_export.to_parquet(
                 output_path,
                 compression='snappy',
                 index=False
