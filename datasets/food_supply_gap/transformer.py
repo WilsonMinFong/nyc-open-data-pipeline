@@ -3,17 +3,15 @@
 from typing import Dict, Any
 import pandas as pd
 import numpy as np
+from src.config.models import DatasetConfig
 from datasets.base import BaseDatasetTransformer
 
 
 class FoodSupplyGapTransformer(BaseDatasetTransformer):
     """Transformer for NYC Emergency Food Supply Gap dataset."""
     
-    def __init__(self):
-        super().__init__(
-            dataset_id="4kc9-zrs2",
-            dataset_name="Emergency Food Supply Gap"
-        )
+    def __init__(self, config: DatasetConfig):
+        super().__init__(config)
     
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """

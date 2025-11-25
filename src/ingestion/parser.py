@@ -40,7 +40,7 @@ class DataParser:
             module_path, class_name = class_path.rsplit('.', 1)
             module = importlib.import_module(module_path)
             transformer_class = getattr(module, class_name)
-            return transformer_class()
+            return transformer_class(self.dataset_config)
         except Exception as e:
             logger.error(f"Failed to load transformer {class_path}: {e}")
             raise

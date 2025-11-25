@@ -6,6 +6,9 @@ import pandas as pd
 from datetime import datetime
 
 
+from src.config.models import DatasetConfig
+
+
 class BaseDatasetTransformer(ABC):
     """
     Abstract base class for dataset-specific transformers.
@@ -14,16 +17,16 @@ class BaseDatasetTransformer(ABC):
     the required abstract methods.
     """
     
-    def __init__(self, dataset_id: str, dataset_name: str):
+    def __init__(self, config: DatasetConfig):
         """
         Initialize the transformer.
         
         Args:
-            dataset_id: Unique identifier for the dataset
-            dataset_name: Human-readable name for the dataset
+            config: Dataset configuration object
         """
-        self.dataset_id = dataset_id
-        self.dataset_name = dataset_name
+        self.config = config
+        self.dataset_id = config.dataset.id
+        self.dataset_name = config.dataset.name
     
     @abstractmethod
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
