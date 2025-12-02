@@ -31,6 +31,7 @@ async def get_food_gaps():
                             'nta_code', n.nta2020,
                             'nta_name', n.nta_name,
                             'boro_name', n.boro_name,
+                            'year', f.year,
                             'supply_gap_lbs', f.supply_gap_lbs,
                             'food_insecure_pct', f.food_insecure_pct,
                             'vulnerable_pop_score', f.vulnerable_pop_score,
@@ -69,6 +70,7 @@ async def get_poverty_by_zip():
                     'geometry', ST_AsGeoJSON(z.geometry)::json,
                     'properties', json_build_object(
                         'zip_code', z.zip_code,
+                        'year', c.year,
                         'poverty_rate', c.poverty_rate,
                         'median_household_income', c.median_household_income,
                         'poverty_count', c.poverty_count,
@@ -79,7 +81,7 @@ async def get_poverty_by_zip():
         ) as geojson
     FROM census_zctas_2020 z
     JOIN census_acs_income_poverty c ON z.zip_code = c.zip_code
-    WHERE c.year = 2023
+    WHERE c.year = (SELECT MAX(year) FROM census_acs_income_poverty)
       AND c.poverty_rate IS NOT NULL
       AND c.median_household_income IS NOT NULL;
     """)

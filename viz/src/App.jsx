@@ -173,6 +173,19 @@ function App() {
     }
   }, [foodGapsData, povertyData]);
 
+  // Get current data year
+  const getDataYear = () => {
+    if (activeLayer === 'food-gap' && foodGapsData?.features?.length > 0) {
+      return foodGapsData.features[0].properties.year;
+    }
+    if (activeLayer === 'poverty' && povertyData?.features?.length > 0) {
+      return povertyData.features[0].properties.year;
+    }
+    return null;
+  };
+
+  const dataYear = getDataYear();
+
   // Toggle visibility
   useEffect(() => {
     if (!mapRef.current || !mapRef.current.isStyleLoaded()) return;
@@ -250,7 +263,10 @@ function App() {
       )}
 
       <div className="legend">
-        <h3>{activeLayer === 'food-gap' ? 'Food Insecurity %' : 'Poverty Rate %'}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <h3>{activeLayer === 'food-gap' ? 'Food Insecurity %' : 'Poverty Rate %'}</h3>
+          {dataYear && <span style={{ fontSize: '0.8em', color: '#666' }}>Data: {dataYear}</span>}
+        </div>
         <div className={`legend-gradient ${activeLayer}`}></div>
         <div className="legend-labels">
           <span>0%</span>
