@@ -131,6 +131,7 @@ function App() {
   useEffect(() => {
     if (!MAPBOX_TOKEN) return;
     if (!mapContainerRef.current) return;
+    if (mapRef.current) return;
 
     mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -284,7 +285,10 @@ function App() {
       });
     });
 
-    return () => mapRef.current.remove();
+    return () => {
+      mapRef.current.remove();
+      mapRef.current = null;
+    };
   }, []);
 
   // Update data sources
