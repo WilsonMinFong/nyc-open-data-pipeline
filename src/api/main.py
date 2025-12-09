@@ -4,7 +4,7 @@ from fastapi.middleware.gzip import GZipMiddleware
 from src.api.routes import router
 import os
 
-app = FastAPI(title="NYC Food Gap Visualization API")
+app = FastAPI(title="Poverty NYC API")
 origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173").split(",")
 
 # Configure CORS
@@ -23,4 +23,4 @@ app.include_router(router, prefix="/api")
 
 @app.get("/")
 async def root():
-    return {"message": "NYC Food Gap Visualization API"}
+    return {"message": "Poverty NYC API"}

@@ -1,4 +1,4 @@
-"""Base dataset transformer class for all NYC Open Data datasets."""
+"""Base dataset transformer class for all Poverty NYC datasets."""
 
 from abc import ABC, abstractmethod
 from typing import Dict, Any

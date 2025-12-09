@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Main data ingestion script for NYC Open Data pipeline."""
+"""Main data ingestion script for Poverty NYC pipeline."""
 
 import argparse
 import json
@@ -213,7 +213,7 @@ def ingest_all_datasets(
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description='NYC Open Data Ingestion Pipeline',
+        description='Poverty NYC Data Pipeline',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

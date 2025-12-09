@@ -1,7 +1,7 @@
 [project]
 name = "nyc-open-data-pipeline"
 version = "0.1.0"
-description = "Extensible data ingestion pipeline for NYC Open Data datasets"
+description = "Data pipeline for Poverty NYC"
 requires-python = ">=3.10"
 dependencies = [
     "requests>=2.31.0",

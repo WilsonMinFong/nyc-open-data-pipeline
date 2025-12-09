@@ -1,1 +1,1 @@
-"""NYC Open Data Ingestion Pipeline - Datasets Package"""
+"""Poverty NYC Data Pipeline - Datasets Package"""

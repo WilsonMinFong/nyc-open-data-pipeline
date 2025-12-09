@@ -1,6 +1,6 @@
-# NYC Open Data Ingestion Pipeline
+# Poverty NYC Pipeline
 
-An extensible, configuration-driven data ingestion pipeline for NYC Open Data datasets. Built with Python, PostgreSQL, and designed for easy addition of new datasets.
+A configuration-driven data analysis pipeline for NYC Open Data datasets. Built with Python, PostgreSQL, and designed for easy addition of new datasets.
 
 ## Features
 
