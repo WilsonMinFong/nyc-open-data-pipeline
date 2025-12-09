@@ -5,6 +5,7 @@ import ScrollyTelling from './components/ScrollyTelling';
 import ComparisonTool from './components/ComparisonTool';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 const INITIAL_CENTER = [-74.006, 40.7128];
 const INITIAL_ZOOM = 11;
 
@@ -81,19 +82,19 @@ function App() {
   // Fetch data
   useEffect(() => {
     // Fetch Food Gap Data
-    fetch('http://localhost:8000/api/food-gaps')
+    fetch(`${API_BASE_URL}/api/food-gaps`)
       .then(res => res.json())
       .then(data => setFoodGapsData(data))
       .catch(err => console.error('Error fetching food gaps:', err));
 
     // Fetch Poverty Data
-    fetch('http://localhost:8000/api/poverty-by-zip')
+    fetch(`${API_BASE_URL}/api/poverty-by-zip`)
       .then(res => res.json())
       .then(data => setPovertyData(data))
       .catch(err => console.error('Error fetching poverty data:', err));
 
     // Fetch Rent Data
-    fetch('http://localhost:8000/api/rent-by-zip')
+    fetch(`${API_BASE_URL}/api/rent-by-zip`)
       .then(res => res.json())
       .then(data => setRentData(data))
       .catch(err => console.error('Error fetching rent data:', err));
